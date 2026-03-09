@@ -1,0 +1,16 @@
+/* mr-agent app – color palette */
+:root {
+  --color-bg-main: #000000;
+  --color-bg-header: #1a1a1a;
+  --color-bg-elevated: #2a2a2a;
+  --color-bg-sidenav: #2d2d2d;
+  --color-bg-input-bar: #2d2d2d;
+  --color-accent: #a7ff83;
+  --color-text-primary: #ffffff;
+  --color-text-muted: #9ca3af;
+  --color-border: #4b5563;
+  --color-button-bg: #ffffff;
+  --color-button-text: #1a1a1a;
+  --color-primary-btn: #3b82f6;
+  --color-primary-btn-hover: #2563eb;
+}

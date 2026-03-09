@@ -1,0 +1,108 @@
+.main-content {
+  flex: 1;
+  min-height: 0;
+  background: var(--color-bg-main);
+  padding: 1rem 1.25rem;
+  overflow-y: scroll;
+  overflow-x: hidden;
+  /* Visible scrollbar (override overlay on some systems) */
+  scrollbar-gutter: stable;
+}
+
+.main-content::-webkit-scrollbar {
+  width: 10px;
+}
+
+.main-content::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.04);
+  border-radius: 5px;
+}
+
+.main-content::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 5px;
+}
+
+.main-content::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.25);
+}
+
+.main-content__empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 200px;
+}
+
+.main-content__empty-text {
+  margin: 0;
+  font-size: 0.9375rem;
+  color: var(--color-text-muted);
+}
+
+.main-content__error {
+  padding: 1rem;
+  margin: 1rem;
+  background: rgba(239, 68, 68, 0.12);
+  border-radius: 10px;
+  font-size: 0.9375rem;
+  color: #fca5a5;
+}
+
+.main-content__messages {
+  max-width: 48rem;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.main-content__message {
+  display: flex;
+  width: 100%;
+}
+
+.main-content__message--user {
+  justify-content: flex-end;
+}
+
+.main-content__message--assistant {
+  justify-content: flex-start;
+}
+
+.main-content__message-bubble {
+  max-width: 85%;
+  padding: 0.75rem 1rem;
+  border-radius: 12px;
+  font-size: 0.9375rem;
+  line-height: 1.5;
+}
+
+.main-content__message--user .main-content__message-bubble {
+  background: var(--color-bg-elevated);
+  border: 1px solid var(--color-border);
+}
+
+.main-content__message--assistant .main-content__message-bubble {
+  background: var(--color-bg-elevated);
+  border: 1px solid var(--color-border);
+}
+
+.main-content__message-label {
+  display: block;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--color-accent);
+  margin-bottom: 0.25rem;
+}
+
+.main-content__message-text {
+  margin: 0;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.main-content__message-bubble--loading .main-content__typing {
+  color: var(--color-text-muted);
+  font-style: italic;
+}

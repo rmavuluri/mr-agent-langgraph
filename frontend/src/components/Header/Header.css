@@ -1,0 +1,77 @@
+.header {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: transparent;
+  padding: 0.75rem 1rem;
+  box-sizing: border-box;
+}
+
+.header__user {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.header__user-email {
+  font-size: 0.875rem;
+  color: var(--color-text-muted);
+}
+
+.header__logout {
+  padding: 0.4rem 0.75rem;
+  background: transparent;
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  font-size: 0.8125rem;
+  color: var(--color-text-primary);
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.header__logout:hover {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.header__brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  background: transparent;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font: inherit;
+  color: inherit;
+}
+
+.header__hamburger {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 4px;
+}
+
+.header__hamburger span {
+  display: block;
+  width: 18px;
+  height: 2px;
+  background: var(--color-text-primary);
+  border-radius: 1px;
+}
+
+.header__logo-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-accent);
+}
+
+.header__logo-text {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--color-accent);
+  letter-spacing: -0.02em;
+}
