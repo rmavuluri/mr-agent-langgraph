@@ -23,14 +23,35 @@ const VIEW_SETTINGS = 'settings';
 const VIEW_ACCOUNT = 'account';
 
 function Sidenav({ isOpen, onClose, onLoginSuccess, user, onLogout, conversations = [], currentConversationId = null, onSelectConversation, onNewConversation, onDeleteConversation }) {
-  const [view, setView] = useState(VIEW_MENU);
+  if (!isOpen) return null;
 
-  // When sidenav opens and user is already logged in, show main menu (not Login form)
-  useEffect(() => {
-    if (isOpen && user) {
-      setView(VIEW_MENU);
-    }
-  }, [isOpen, user]);
+  return (
+    <>
+      <div
+        className="sidenav-backdrop"
+        onClick={onClose}
+        onKeyDown={(e) => e.key === 'Escape' && onClose()}
+        role="button"
+        tabIndex={0}
+        aria-label="Close menu"
+      />
+      <SidenavOpenContent
+        onClose={onClose}
+        onLoginSuccess={onLoginSuccess}
+        user={user}
+        onLogout={onLogout}
+        conversations={conversations}
+        currentConversationId={currentConversationId}
+        onSelectConversation={onSelectConversation}
+        onNewConversation={onNewConversation}
+        onDeleteConversation={onDeleteConversation}
+      />
+    </>
+  );
+}
+
+function SidenavOpenContent({ onClose, onLoginSuccess, user, onLogout, conversations, currentConversationId, onSelectConversation, onNewConversation, onDeleteConversation }) {
+  const [view, setView] = useState(VIEW_MENU);
 
   const openLogin = () => setView(VIEW_LOGIN);
   const openSignup = () => setView(VIEW_SIGNUP);
@@ -45,49 +66,37 @@ function Sidenav({ isOpen, onClose, onLoginSuccess, user, onLogout, conversation
     onClose();
   };
 
-  if (!isOpen) return null;
-
   const ariaLabel = view === VIEW_LOGIN ? 'Log in' : view === VIEW_SIGNUP ? 'Sign up' : view === VIEW_SETTINGS ? 'Settings' : view === VIEW_ACCOUNT ? 'Account' : 'Main navigation';
 
   return (
-    <>
-      <div
-        className="sidenav-backdrop"
-        onClick={handleClose}
-        onKeyDown={(e) => e.key === 'Escape' && handleClose()}
-        role="button"
-        tabIndex={0}
-        aria-label="Close menu"
-      />
-      <aside className="sidenav" aria-label={ariaLabel}>
-        {view === VIEW_MENU && (
-          <SidenavMenu
-            onClose={handleClose}
-            onLoginClick={openLogin}
-            user={user}
-            onLogout={onLogout}
-            onOpenSettings={openSettings}
-            conversations={conversations || []}
-            currentConversationId={currentConversationId}
-            onSelectConversation={onSelectConversation}
-            onNewConversation={onNewConversation}
-            onDeleteConversation={onDeleteConversation}
-          />
-        )}
-        {view === VIEW_LOGIN && (
-          <SidenavLogin onBack={backToMenu} onSignupClick={openSignup} onLoginSuccess={onLoginSuccess} />
-        )}
-        {view === VIEW_SIGNUP && (
-          <SidenavSignup onBack={backToLogin} onLoginClick={backToLogin} />
-        )}
-        {view === VIEW_SETTINGS && (
-          <SidenavSettings onBack={backToMenu} onOpenAccount={openAccount} onLogout={onLogout} />
-        )}
-        {view === VIEW_ACCOUNT && user && (
-          <SidenavAccount user={user} onBack={backToSettings} onLogout={onLogout} />
-        )}
-      </aside>
-    </>
+    <aside className="sidenav" aria-label={ariaLabel}>
+      {view === VIEW_MENU && (
+        <SidenavMenu
+          onClose={handleClose}
+          onLoginClick={openLogin}
+          user={user}
+          onLogout={onLogout}
+          onOpenSettings={openSettings}
+          conversations={conversations || []}
+          currentConversationId={currentConversationId}
+          onSelectConversation={onSelectConversation}
+          onNewConversation={onNewConversation}
+          onDeleteConversation={onDeleteConversation}
+        />
+      )}
+      {view === VIEW_LOGIN && (
+        <SidenavLogin onBack={backToMenu} onSignupClick={openSignup} onLoginSuccess={onLoginSuccess} />
+      )}
+      {view === VIEW_SIGNUP && (
+        <SidenavSignup onBack={backToLogin} onLoginClick={backToLogin} />
+      )}
+      {view === VIEW_SETTINGS && (
+        <SidenavSettings onBack={backToMenu} onOpenAccount={openAccount} onLogout={onLogout} />
+      )}
+      {view === VIEW_ACCOUNT && user && (
+        <SidenavAccount user={user} onBack={backToSettings} onLogout={onLogout} />
+      )}
+    </aside>
   );
 }
 
@@ -185,7 +194,7 @@ function SidenavMenu({ onClose, onLoginClick, user, onLogout, onOpenSettings, co
 }
 
 const SETTINGS_LINKS = [
-  { label: 'Cookie Settings', href: '#', arrow: true },
+  { label: 'Cookie Settings', href: '#' },
   { label: 'Terms of Service', href: '#', external: true },
   { label: 'Privacy Policy', href: '#', external: true },
 ];
@@ -205,7 +214,7 @@ function SidenavSettings({ onBack, onOpenAccount, onLogout }) {
           <span>Account</span>
           <ChevronRightIcon />
         </button>
-        {SETTINGS_LINKS.map(({ label, href, arrow, external }) => (
+        {SETTINGS_LINKS.map(({ label, href, external }) => (
           <a key={label} href={href} className="sidenav__settings-item">
             <span>{label}</span>
             {external ? <ExternalIcon /> : <ChevronRightIcon />}

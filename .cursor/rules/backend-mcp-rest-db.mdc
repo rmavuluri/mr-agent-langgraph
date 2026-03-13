@@ -1,0 +1,35 @@
+---
+description: Backend REST API, MCP, and database conventions (Express, Postgres)
+globs: backend/**/*.ts,backend/**/*.sql
+alwaysApply: false
+---
+
+# Backend Rules (REST, MCP, DB)
+
+## Layout
+- **Routes**: `src/routes/` — mount under `/api` in `index.ts`. One router per domain (e.g. `auth.routes.ts`).
+- **Controllers**: `src/controllers/` — handle `req`/`res`, validate input, call services, send JSON or status codes.
+- **Services**: `src/services/` — business logic, no direct `req`/`res`. Auth, MCP client, future agent orchestration live here.
+- **DB**: `src/db/` — `client.ts` (pool), `queries.ts` (SQL strings), `init.ts` for schema apply. SQL files in `sql/` (e.g. `schema.sql`).
+- **Config**: `src/config/env.ts` — read `process.env` once; require only what’s mandatory (e.g. `DATABASE_URL`). No secrets in code.
+
+## REST API
+- Use Express: `express.json()`, `cors` as needed. Mount routes with `app.use('/api', routes)`.
+- Return JSON with consistent shape: `{ message }` or `{ error, message }` on errors. Use appropriate status codes (400, 401, 404, 409, 500).
+- Validate request body/query (types, presence). Return 400 with a clear `message` on invalid input. Use a shared error handler for unhandled errors.
+
+## MCP (Model Context Protocol)
+- When implementing MCP: keep server/client in backend. Expose tools and resources per MCP spec; do not expose secrets to the client.
+- Use env or config for MCP server URL/credentials. Prefer one place (e.g. `config/env.ts`) for all env-driven config.
+
+## Database
+- Postgres only. Use parameterized queries only (`$1`, `$2`, …); never concatenate user input into SQL.
+- Schema: versioned SQL in `sql/`. Run init/migrations from backend directory so paths resolve (e.g. `sql/schema.sql`). Document required DB name and `DATABASE_URL` in `.env.example`.
+- Keep queries in `queries.ts`; services import and execute via the shared pool. Handle connection errors and unique/constraint violations with clear responses.
+
+## Error handling
+- Controllers: catch service errors, map to status and JSON (e.g. 401 for bad creds, 409 for conflict). Re-throw only for central error handler.
+- Use a single `errorHandler` middleware: set status from `err.statusCode` or default 500, send `{ error, message }`. Log errors in development.
+
+## Security
+- No hardcoded API keys or DB URLs. Use env vars and `.env` (gitignored). Never log request bodies that may contain passwords or tokens.

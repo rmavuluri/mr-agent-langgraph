@@ -1,0 +1,21 @@
+---
+description: Project stack and layout — LangGraph agents, React UI, Backend (MCP, REST, DB)
+alwaysApply: true
+---
+
+# mr-agent-langgraph Stack
+
+## Overview
+- **Agents / subagents**: LangGraph (TypeScript/JavaScript). Stateful graphs, tools, checkpointing, optional subgraphs for subagents.
+- **UI**: React (Vite), in `frontend/`. Talks to backend via REST (`VITE_API_URL`).
+- **Backend**: Node/Express in `backend/`. Handles REST API, MCP (Model Context Protocol) when used, and DB (Postgres).
+
+## Layout
+- `frontend/` — React app: pages, components, `src/services/api.js` for backend calls.
+- `backend/` — Express: `src/routes/`, `src/controllers/`, `src/services/`, `src/db/`, `src/config/`, `sql/` for schema.
+- Agent/graph code can live under `backend/` (e.g. `src/agent/`) or a dedicated package; keep a single place for LangGraph graphs and tools.
+
+## Conventions
+- REST API is under `/api` (e.g. `/api/auth/*`). Frontend uses `api.js`; no hardcoded credentials.
+- DB: Postgres, connection via `DATABASE_URL`. Schema in `backend/sql/`; run migrations/init from backend dir.
+- When adding MCP: server or client logic in backend; expose tools/resources per MCP spec; never expose secrets in client.

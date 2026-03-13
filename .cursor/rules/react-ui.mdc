@@ -1,0 +1,34 @@
+---
+description: React UI patterns, components, API usage, and structure for frontend
+globs: frontend/**/*.jsx,frontend/**/*.tsx,frontend/**/*.js
+alwaysApply: false
+---
+
+# React UI Rules
+
+## Structure
+- **Pages** in `src/pages/` (e.g. `LandingPage`). One main page per route; compose from components.
+- **Components** in `src/components/` with a folder per component: `ComponentName/index.js` (or `.jsx`) plus `ComponentName.css` and optional `ComponentName.jsx`.
+- **API**: Use `src/services/api.js` for all backend calls. Base URL from `VITE_API_URL`; no raw fetch to backend elsewhere unless justified.
+
+## Components
+- Prefer functional components and hooks. One clear responsibility per component.
+- Colocate styles (CSS modules or `ComponentName.css`) with the component.
+- Use meaningful names: `Header`, `MainContent`, `InputBar`, `Sidenav` — not generic `Box`/`Wrapper` unless truly generic.
+
+## State and data
+- Keep page-level state in the page or a small set of hooks; pass callbacks and data down.
+- Handle loading and error state for async operations (e.g. auth, API calls). Show user-facing messages; don’t leave failed requests silent.
+- Persist only what’s needed (e.g. user in `localStorage` with a single key); avoid storing tokens in `localStorage` if moving to proper auth later.
+
+## API usage
+- Use the existing `request()` and exported functions in `api.js`. Add new endpoints as named functions with JSDoc for request/response shape.
+- On non-2xx, read `err.response` and parse JSON body for `message`/`error` when present; surface a clear message in the UI.
+
+## Accessibility and UX
+- Use semantic HTML and ARIA where it improves a11y (e.g. `aria-label` on icon buttons, `role="button"` when not using `<button>`).
+- Support keyboard (e.g. Escape to close overlays/sidenav). Avoid trapping focus unless required by the pattern.
+
+## Code style
+- Use existing patterns: `import` from `../../services/api`, relative paths for local components. Prefer named exports for components and `api` object for backend.
+- No hardcoded API keys or secrets in frontend code.

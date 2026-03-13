@@ -1,0 +1,58 @@
+---
+description: LangGraph agent architecture, state, tools, checkpointing, subgraphs (TypeScript/JavaScript)
+globs: backend/**/agent/**/*.ts,backend/**/graph/**/*.ts,agent/**/*.ts,packages/agent/**/*.ts
+alwaysApply: false
+---
+
+# LangGraph Agent Rules
+
+## Architecture
+- Always define a typed state schema for all graph state (e.g. `StateSchema` with Zod or `Annotation`)
+- Use `StateGraph` for stateful agents, `MessageGraph` for pure chat (append-only messages)
+- For **subagents**: use subgraphs — compile a child graph and add it as a node in the parent graph; pass state in/out via a clear contract
+- Define clear node functions — each node should do ONE thing only
+- Use `addConditionalEdges` for routing logic, never hardcode flow in nodes
+- Always define an explicit `END` node — never let graphs terminate implicitly
+
+## State Management
+- Keep state minimal — only pass data nodes actually need
+- Use `MessagesValue` (or the framework’s message reducer) for message accumulation in state
+- Never mutate state in place — always return a partial update object from nodes
+
+Example state with messages (LangGraph.js):
+```typescript
+import { StateSchema, MessagesValue } from "@langchain/langgraph";
+import { z } from "zod";
+
+const AgentState = new StateSchema({
+  messages: MessagesValue,
+  // other keys as needed, e.g.:
+  // count: z.number(),
+});
+```
+
+## Tool Use
+- Define tools with clear names and descriptions (structured tool interface)
+- Always bind tools to the LLM when calling the model
+- Use `ToolNode` from `@langchain/langgraph/prebuilt` for standard tool execution
+- Handle tool errors via `handleToolErrors` or try/catch — log and return fallback state
+
+## Checkpointing & Memory
+- Always use `MemorySaver` or `AsyncPostgresSaver` for persistence
+- Pass `thread_id` in `config.configurable` for all stateful invocations
+- Use `checkpointer` at graph compile time, not at invocation time
+
+## Error Handling
+- Wrap node logic in try/catch — never let unhandled exceptions crash the graph
+- Log errors with structured JSON (e.g. for CloudWatch or your logger)
+- Return error state keys so downstream nodes can handle gracefully
+
+## Testing
+- Write unit tests for each node function independently
+- Use `graph.invoke()` in tests for deterministic final state; avoid `graph.stream()` for assertions
+- Mock LLM and tool calls (e.g. runnables that return fixed responses) so tests don’t hit real APIs
+
+## Code Style
+- Use async node functions for all I/O-bound operations
+- Type all function signatures — state input and returned updates should match your state schema
+- Name nodes clearly: `callModel`, `executeTools`, `routeQuery`, `summarizeOutput`
