@@ -5,11 +5,11 @@ public async putEventsInFulcrum(eventMessage) {
   
     try {
   
-      // Build event
+      // Build Fulcrum Event
       fulcrumEvent = this.getFulcrumEvent(eventMessage);
   
       logger.debug(
-        "FULCRUM MSK TEST EVENT",
+        "FULCRUM MSK EVENT",
         JSON.stringify(fulcrumEvent)
       );
   
@@ -17,6 +17,7 @@ public async putEventsInFulcrum(eventMessage) {
       const validationErrors = await validate.validateEvent(fulcrumEvent);
   
       if (validationErrors?.length > 0) {
+  
         logger.error(
           "Fulcrum publish validation errors",
           {
@@ -27,11 +28,11 @@ public async putEventsInFulcrum(eventMessage) {
   
         return {
           statusCode: 400,
-          body: validationErrors
+          body: JSON.stringify(validationErrors)
         };
       }
   
-      // Event received logs
+      // Logging event information
       logger.debug(
         "Event Received - event_id:",
         fulcrumEvent?.value?.event_id
@@ -42,8 +43,12 @@ public async putEventsInFulcrum(eventMessage) {
         fulcrumEvent?.value?.event_correlationId
       );
   
-      // Send event to MSK
+      // Send event to MSK (Promise handled with await)
       recordMetadata = await sendEventSync(fulcrumEvent);
+  
+      if (!recordMetadata) {
+        throw new Error("MSK producer returned empty metadata");
+      }
   
       logger.debug(
         "recordMetadata",
@@ -54,12 +59,14 @@ public async putEventsInFulcrum(eventMessage) {
   
       return {
         statusCode: 200,
-        metadata: {
-          topicName: recordMetadata?.[0]?.topicName,
-          partition: recordMetadata?.[0]?.partition,
-          offset: recordMetadata?.[0]?.baseOffset,
-          key: fulcrumEvent?.metadata?.key
-        }
+        body: JSON.stringify({
+          metadata: {
+            topicName: recordMetadata?.[0]?.topicName,
+            partition: recordMetadata?.[0]?.partition,
+            offset: recordMetadata?.[0]?.baseOffset,
+            key: fulcrumEvent?.metadata?.key
+          }
+        })
       };
   
     } catch (error) {
@@ -83,7 +90,7 @@ public async putEventsInFulcrum(eventMessage) {
   
     } finally {
   
-      // Always cleanup producer
+      // Ensure producer cleanup always happens
       try {
         sendEvent.cleanupProducer();
       } catch (cleanupError) {
