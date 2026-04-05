@@ -40,6 +40,79 @@
   flex-shrink: 0;
 }
 
+.sidenav__header-actions {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+}
+
+.sidenav__tooltip-anchor {
+  position: relative;
+  display: inline-flex;
+}
+
+.sidenav__tooltip-anchor::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  left: 50%;
+  bottom: calc(100% + 8px);
+  transform: translateX(-50%);
+  padding: 0.35rem 0.6rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+  white-space: nowrap;
+  color: var(--color-text-primary, #fff);
+  background: rgba(30, 30, 35, 0.95);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 6px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity 0.15s ease, visibility 0.15s ease;
+  z-index: 10;
+}
+
+.sidenav__tooltip-anchor:hover::after,
+.sidenav__tooltip-anchor:focus-within::after {
+  opacity: 1;
+  visibility: visible;
+}
+
+.sidenav__new-chat {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  border: none;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--color-accent);
+  cursor: pointer;
+  line-height: 1;
+}
+
+.sidenav__new-chat:hover {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.sidenav__new-chat:focus {
+  outline: none;
+}
+
+.sidenav__new-chat:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+.sidenav__new-chat-plus {
+  font-size: 1.5rem;
+  font-weight: 300;
+  line-height: 1;
+}
+
 .sidenav__close {
   display: flex;
   align-items: center;
@@ -80,16 +153,6 @@
   align-items: flex-start;
   padding: 1rem 1.25rem;
   min-height: 0;
-}
-
-.sidenav__link--btn {
-  width: 100%;
-  text-align: left;
-  border: none;
-  background: none;
-  cursor: pointer;
-  font: inherit;
-  color: inherit;
 }
 
 .sidenav__conversation-list {
@@ -307,35 +370,6 @@
 
 .sidenav__settings-item--logout {
   margin-top: 0.5rem;
-}
-
-.sidenav__nav {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-  padding: 0.5rem 0.75rem;
-  flex-shrink: 0;
-}
-
-.sidenav__link {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  padding: 0.75rem 1rem;
-  color: var(--color-text-primary);
-  text-decoration: none;
-  border-radius: 8px;
-  font-size: 0.9375rem;
-  transition: background 0.15s;
-}
-
-.sidenav__link:hover {
-  background: rgba(255, 255, 255, 0.06);
-}
-
-.sidenav__link svg {
-  flex-shrink: 0;
-  color: var(--color-text-primary);
 }
 
 .sidenav__signup {

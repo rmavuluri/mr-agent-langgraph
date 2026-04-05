@@ -108,18 +108,22 @@ function SidenavMenu({ onClose, onLoginClick, user, onLogout, onOpenSettings, co
           <CloseIcon />
         </button>
         <span className="sidenav__title">mr-agent</span>
+        <div className="sidenav__header-actions">
+          <span className="sidenav__tooltip-anchor" data-tooltip="New Conversation">
+            <button
+              type="button"
+              className="sidenav__new-chat"
+              onClick={() => onNewConversation?.()}
+              aria-label="New Conversation"
+              title="New Conversation"
+            >
+              <span className="sidenav__new-chat-plus" aria-hidden>
+                +
+              </span>
+            </button>
+          </span>
+        </div>
       </div>
-
-      <nav className="sidenav__nav">
-        <a href="#" className="sidenav__link">
-          <DiscoverIcon />
-          <span>Discover</span>
-        </a>
-        <button type="button" className="sidenav__link sidenav__link--btn" onClick={() => onNewConversation?.()}>
-          <NewConversationIcon />
-          <span>New conversation</span>
-        </button>
-      </nav>
 
       {user ? (
         <>
@@ -715,24 +719,6 @@ function AppleIcon() {
   return (
     <svg width="18" height="18" viewBox="0 0 18 18" fill="currentColor" aria-hidden>
       <path d="M14.5 9.54c-.03-2.3 1.88-3.4 2.01-3.48-1.1-1.61-2.82-2.04-3.43-2.08-1.46-.15-2.85.86-3.59.86-.75 0-1.85-.83-3.05-.81-1.57.02-3.01.91-3.83 2.32-1.63 2.83-.42 7.02 1.17 9.33.78 1.12 1.68 2.38 2.88 2.34 1.17-.05 1.61-.76 3.03-.76 1.41 0 1.81.76 3.05.73 1.26-.02 2.06-1.14 2.83-2.25.89-1.28 1.26-2.52 1.28-2.58-.03-.02-2.45-.94-2.47-3.74zM11.98 4.42c1.3-1.57 1.09-3.84-.69-5.18-.95-.66-2.2-.52-3.33.12-1.02.6-1.9 1.56-1.74 1.66 1.39.11 2.78-.75 3.76-1.6z" />
-    </svg>
-  );
-}
-
-function DiscoverIcon() {
-  return (
-    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
-      <path d="M17 8.5c0 3.6-2.9 6.5-6.5 6.5-1.2 0-2.3-.3-3.3-.8L3 16l1.8-4.2C3.3 10.7 3 9.6 3 8.5 3 4.9 5.9 2 9.5 2S16 4.9 16 8.5z" />
-    </svg>
-  );
-}
-
-function NewConversationIcon() {
-  return (
-    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
-      <path d="M14 2H6a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2z" />
-      <path d="M12 2v4a2 2 0 0 0 2 2h4" />
-      <path d="M7 8h6M7 11h4" />
     </svg>
   );
 }

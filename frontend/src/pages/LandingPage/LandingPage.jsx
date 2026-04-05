@@ -8,6 +8,18 @@ import './LandingPage.css';
 
 const USER_STORAGE_KEY = 'mr-agent-user';
 
+/** Backend may return { message } (agent) or { content: [{ type, text }] } (blocks). */
+function assistantTextFromChatResponse(res) {
+  if (res == null) return '';
+  if (typeof res.message === 'string' && res.message.trim()) return res.message.trim();
+  const blocks = Array.isArray(res.content) ? res.content : [];
+  return blocks
+    .filter((b) => b && b.type === 'text')
+    .map((b) => b.text || '')
+    .join('')
+    .trim();
+}
+
 function loadStoredUser() {
   try {
     const raw = localStorage.getItem(USER_STORAGE_KEY);
@@ -118,9 +130,10 @@ function LandingPage() {
             user_id: user.id,
           });
           if (res.conversation_id) setConversationId(res.conversation_id);
-          const assistantContent = Array.isArray(res.content) ? res.content : [];
-          const textParts = assistantContent.filter((b) => b && b.type === 'text').map((b) => b.text || '');
-          const assistantMessage = { role: 'assistant', content: textParts.join('').trim() || '(No response)' };
+          const assistantMessage = {
+            role: 'assistant',
+            content: assistantTextFromChatResponse(res) || '(No response)',
+          };
           setMessages((prev) => [...prev, assistantMessage]);
           api.getConversations(user.id).then((data) => setConversations(data.conversations || []));
         } else {
@@ -128,9 +141,10 @@ function LandingPage() {
           const res = await api.chat({
             messages: nextMessages.map((m) => ({ role: m.role, content: m.content })),
           });
-          const assistantContent = Array.isArray(res.content) ? res.content : [];
-          const textParts = assistantContent.filter((b) => b && b.type === 'text').map((b) => b.text || '');
-          const assistantMessage = { role: 'assistant', content: textParts.join('').trim() || '(No response)' };
+          const assistantMessage = {
+            role: 'assistant',
+            content: assistantTextFromChatResponse(res) || '(No response)',
+          };
           setMessages((prev) => [...prev, assistantMessage]);
         }
       } catch (err) {
